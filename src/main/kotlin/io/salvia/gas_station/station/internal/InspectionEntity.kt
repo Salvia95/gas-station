@@ -1,7 +1,6 @@
-package io.salvia.gas_station.domain.station.entity
+package io.salvia.gas_station.station.internal
 
-import io.salvia.gas_station.common.entity.BaseEntity
-import io.salvia.gas_station.domain.station.enums.InspectionStatus
+import io.salvia.gas_station.shared.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -11,14 +10,14 @@ import jakarta.persistence.Index
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
-import jakarta.validation.constraints.Max
-import jakarta.validation.constraints.Min
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
+/**
+ * 점검 엔티티 (station 모듈 내부 전용)
+ */
 @Entity
 @Table(
     name = "inspections",
@@ -28,7 +27,7 @@ import java.time.LocalDate
         Index(name = "idx_next_date", columnList = "next_inspection_date")
     ]
 )
-class Inspection(
+internal class InspectionEntity(
     inspectionType: InspectionType,
     inspectionTarget: InspectionTarget,
     scheduledDate: LocalDate,
@@ -37,7 +36,7 @@ class Inspection(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id", nullable = false)
-    var station: GasStaion? = null
+    var station: StationEntity? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "inspection_type", nullable = false, length = 20)
@@ -75,38 +74,10 @@ class Inspection(
     var inspector: String = inspector
         protected set
 
-
+    protected constructor() : this(InspectionType.REGULAR, InspectionTarget.STATION, LocalDate.now(), "")
 }
 
-@Entity
-@Table(
-    name = "inspection_agencies",
-    uniqueConstraints = [
-        UniqueConstraint(
-            name = "uk_business_registration_number",
-            columnNames = ["business_registration_number"]
-        )
-    ]
-)
-class InspectionAgency(
-    agencyName: String,
-    businessRegistrationNumber: String,
-    contact: String
-) : BaseEntity() {
-
-    @Column(name = "agency_name", nullable = false, length = 30)
-    @field:NotBlank(message = "점검 기관명은 필수 입력값 입니다.")
-    @field:Size(max = 30, message = "점검 기관명은 30자 이하여야 합니다.")
-    var agencyName: String = agencyName
-        protected set
-
-    @Column(name = "business_registration_number", nullable = false, length = 20)
-
-    var businessRegistrationNumber: String = businessRegistrationNumber
-        protected set
-}
-
-enum class InspectionType(
+internal enum class InspectionType(
     val description: String,
     val requiredDocumentation: Boolean
 ) {
@@ -121,11 +92,34 @@ enum class InspectionType(
     }
 }
 
-enum class InspectionTarget(val description: String) {
+internal enum class InspectionTarget(val description: String) {
     STATION("주유소 전체"),
     FUEL_TANK("연료탱크"),
     PUMP("주유기"),
     FIRE_SAFETY("소방 설비"),
     ELECTRICAL("전기 설비"),
     OTHER("기타");
+}
+
+internal enum class InspectionStatus(val description: String) {
+    SCHEDULED("점검 예정"),
+    IN_PROGRESS("진행 중"),
+    COMPLETED_NORMAL("완료-정상"),
+    COMPLETED_WARNING("완료-주의"),
+    COMPLETED_ACTION_REQUIRED("완료-조치 필요"),
+    CANCELED("취소됨");
+
+    fun isCompleted(): Boolean {
+        return this in listOf(
+            COMPLETED_NORMAL,
+            COMPLETED_WARNING,
+            COMPLETED_ACTION_REQUIRED
+        )
+    }
+
+    fun needAction(): Boolean {
+        return this in listOf(
+            COMPLETED_WARNING, COMPLETED_ACTION_REQUIRED
+        )
+    }
 }

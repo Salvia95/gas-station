@@ -1,6 +1,6 @@
-package io.salvia.gas_station.domain.station.entity
+package io.salvia.gas_station.station.internal
 
-import io.salvia.gas_station.common.entity.BaseEntity
+import io.salvia.gas_station.shared.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -12,9 +12,12 @@ import jakarta.persistence.Table
 import jakarta.validation.constraints.NotNull
 import java.time.LocalTime
 
+/**
+ * 주유소 운영 정보 엔티티 (station 모듈 내부 전용)
+ */
 @Entity
 @Table(name = "station_operation_info")
-class StationOperationInfo (
+internal class StationOperationInfoEntity(
     stationType: StationType,
     is24Hours: Boolean,
     openingTime: LocalTime?,
@@ -27,7 +30,7 @@ class StationOperationInfo (
         nullable = false,
         unique = true
     )
-    var station: GasStaion? = null
+    var station: StationEntity? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "station_type", nullable = false, length = 20)
@@ -83,7 +86,7 @@ class StationOperationInfo (
     ) {
         this.is24Hours = is24Hours
 
-        if(is24Hours) {
+        if (is24Hours) {
             this.openingTime = null
             this.closingTime = null
         } else {
@@ -137,7 +140,6 @@ class StationOperationInfo (
         }
     }
 
-    // JPA를 위한 no-arg constructor
     protected constructor() : this(
         StationType.FULL_SERVICE,
         false,
@@ -146,14 +148,13 @@ class StationOperationInfo (
     )
 }
 
-
-enum class StationType(val description: String, val laborCostMultiplier: Double) {
+internal enum class StationType(val description: String, val laborCostMultiplier: Double) {
     SELF_SERVICE("셀프", 0.0),
     FULL_SERVICE("유인", 1.0),
     HYBRID("혼합", 0.5)
 }
 
-enum class CarWashType(val description: String) {
+internal enum class CarWashType(val description: String) {
     AUTOMATIC("자동 세차"),
     MANUAL("수동 세차"),
     HYBRID("혼합형")

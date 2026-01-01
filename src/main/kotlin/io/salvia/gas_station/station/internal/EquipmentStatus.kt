@@ -1,4 +1,4 @@
-package io.salvia.gas_station.domain.station.enums
+package io.salvia.gas_station.station.internal
 
 enum class EquipmentStatus(val description: String) {
     ACTIVE("정상 운영"),

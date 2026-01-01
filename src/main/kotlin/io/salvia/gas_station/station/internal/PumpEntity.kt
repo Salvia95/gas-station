@@ -1,9 +1,7 @@
-package io.salvia.gas_station.domain.station.entity
+package io.salvia.gas_station.station.internal
 
-import io.salvia.gas_station.common.entity.BaseEntity
-import io.salvia.gas_station.common.entity.Inspectable
-import io.salvia.gas_station.common.entity.Statusable
-import io.salvia.gas_station.domain.station.enums.EquipmentStatus
+import io.salvia.gas_station.shared.BaseEntity
+import io.salvia.gas_station.shared.Inspectable
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -21,6 +19,9 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Size
 import java.time.LocalDate
 
+/**
+ * 주유기 엔티티 (station 모듈 내부 전용)
+ */
 @Entity
 @Table(
     name = "pumps",
@@ -35,14 +36,14 @@ import java.time.LocalDate
         )
     ]
 )
-class Pump(
+internal class PumpEntity(
     pumpNumber: String,
     nozzleCount: Int
 ) : BaseEntity(), Inspectable, Statusable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id", nullable = false)
-    var station: GasStaion? = null
+    var station: StationEntity? = null
 
     @Column(name = "pump_number", nullable = false, length = 20)
     @field:NotBlank(message = "주유기 번호는 필수 입력값 입니다.")
@@ -78,26 +79,27 @@ class Pump(
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     )
-    private val _nozzles: MutableList<PumpNozzle> = mutableListOf()
+    private val _nozzles: MutableList<PumpNozzleEntity> = mutableListOf()
 
-    val nozzles: List<PumpNozzle>
+    val nozzles: List<PumpNozzleEntity>
         get() = _nozzles.toList()
 
-    fun addNozzle(nozzle: PumpNozzle) {
+    fun addNozzle(nozzle: PumpNozzleEntity) {
         require(_nozzles.size < nozzleCount) {
             "노즐 개수는 ${nozzleCount}개를 초과할 수 없습니다."
         }
         require(_nozzles.none { it.fuelType == nozzle.fuelType }) {
-            "이미 ${nozzle.fuelType.displayname} 노즐이 존재합니다."
+            "이미 ${nozzle.fuelType.displayName} 노즐이 존재합니다."
         }
 
         _nozzles.add(nozzle)
         nozzle.pump = this
     }
 
-    fun removeNozzle(nozzle: PumpNozzle) {
+    fun removeNozzle(nozzle: PumpNozzleEntity) {
         _nozzles.remove(nozzle)
         nozzle.pump = null
     }
 
+    protected constructor() : this("", 0)
 }

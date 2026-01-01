@@ -1,7 +1,10 @@
-package io.salvia.gas_station.common.entity
+package io.salvia.gas_station.shared
 
 import java.time.LocalDate
 
+/**
+ * 점검이 필요한 엔티티를 위한 인터페이스
+ */
 interface Inspectable {
     var lastInspectionDate: LocalDate?
     var nextInspectionDate: LocalDate?

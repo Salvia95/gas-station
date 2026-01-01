@@ -1,4 +1,4 @@
-package io.salvia.gas_station.common.entity
+package io.salvia.gas_station.shared
 
 import jakarta.persistence.Column
 import jakarta.persistence.EntityListeners
@@ -13,6 +13,10 @@ import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.LocalDateTime
 
+/**
+ * 모든 엔티티의 기본 클래스
+ * Auditing 정보와 ID를 포함합니다.
+ */
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
 abstract class BaseEntity {
@@ -34,7 +38,7 @@ abstract class BaseEntity {
 
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
-    var updatedAt: LocalDateTime?= null
+    var updatedAt: LocalDateTime? = null
         protected set
 
     @LastModifiedBy
@@ -56,5 +60,4 @@ abstract class BaseEntity {
     override fun toString(): String {
         return "${this::class.simpleName}(id=$id)"
     }
-
 }

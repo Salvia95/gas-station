@@ -1,10 +1,7 @@
-package io.salvia.gas_station.domain.station.entity
+package io.salvia.gas_station.station.internal
 
-import io.salvia.gas_station.common.entity.BaseEntity
-import io.salvia.gas_station.common.entity.Inspectable
-import io.salvia.gas_station.common.entity.Statusable
-import io.salvia.gas_station.domain.station.enums.EquipmentStatus
-import io.salvia.gas_station.domain.station.enums.FuelType
+import io.salvia.gas_station.shared.BaseEntity
+import io.salvia.gas_station.shared.Inspectable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -22,12 +19,15 @@ import jakarta.validation.constraints.Size
 import java.math.BigDecimal
 import java.time.LocalDate
 
+/**
+ * 홈로리 (이동식 탱크) 엔티티 (station 모듈 내부 전용)
+ */
 @Entity
 @Table(
     name = "home_lorry",
     indexes = [
         Index(name = "idx_station_home_lorry_number", columnList = "station_id, home_lorry_number"),
-        Index(name = "idx fuel_type", columnList = "fuel_type")
+        Index(name = "idx_fuel_type", columnList = "fuel_type")
     ],
     uniqueConstraints = [
         UniqueConstraint(
@@ -36,7 +36,7 @@ import java.time.LocalDate
         )
     ]
 )
-class HomeLorry (
+internal class HomeLorryEntity(
     homeLorryNumber: String,
     fuelType: FuelType,
     capacity: BigDecimal
@@ -44,7 +44,7 @@ class HomeLorry (
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id", nullable = false)
-    var station: GasStaion? = null
+    var station: StationEntity? = null
 
     @Column(name = "home_lorry_number", nullable = false, length = 20)
     @field:NotBlank(message = "홈로리 번호는 필수 입력값 입니다.")
@@ -60,7 +60,7 @@ class HomeLorry (
 
     @Column(name = "capacity", nullable = false, precision = 12, scale = 2)
     @field:NotNull(message = "홈로리 용량은 필수 입력값 입니다.")
-    @field:Min(value = 0, message = "용량은 0 이상이여야 합니다.")
+    @field:Min(value = 0, message = "용량은 0 이상이어야 합니다.")
     var capacity: BigDecimal = capacity
         protected set
 
@@ -82,4 +82,5 @@ class HomeLorry (
     @Column(name = "next_inspection_date")
     override var nextInspectionDate: LocalDate? = null
 
+    protected constructor() : this("", FuelType.GASOLINE_REGULAR, BigDecimal.ZERO)
 }

@@ -1,7 +1,6 @@
-package io.salvia.gas_station.domain.station.entity
+package io.salvia.gas_station.station.internal
 
-import io.salvia.gas_station.common.entity.BaseEntity
-import io.salvia.gas_station.domain.station.enums.StationStatus
+import io.salvia.gas_station.shared.BaseEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -15,19 +14,19 @@ import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
 import jakarta.validation.constraints.Size
-import org.hibernate.annotations.Cascade
 
 /**
- * GasStation Entity
- *
+ * 주유소 엔티티 (station 모듈 내부 전용)
  */
 @Entity
-@Table(name = "gas_stations",
+@Table(
+    name = "gas_stations",
     indexes = [
         Index(name = "idx_city", columnList = "city"),
         Index(name = "idx_status", columnList = "status")
-    ])
-class GasStaion(
+    ]
+)
+internal class StationEntity(
     name: String,
     code: String,
     address: String,
@@ -41,10 +40,6 @@ class GasStaion(
     var name: String = name
         protected set
 
-    /**
-     * Internel Code for Management
-     * Ex) "STN-2024-001"
-     */
     @Column(name = "code", nullable = false, unique = true, length = 50)
     @field:NotBlank(message = "주유소 코드는 필수 입력값 입니다.")
     @field:Pattern(
@@ -54,9 +49,6 @@ class GasStaion(
     var code: String = code
         protected set
 
-    /**
-     * 상세 주소
-     */
     @Column(name = "address", nullable = false, length = 255)
     @field:NotBlank(message = "주소는 필수입니다")
     @field:Size(max = 255, message = "주소는 255자 이하여야 합니다")
@@ -89,7 +81,7 @@ class GasStaion(
         orphanRemoval = true,
         fetch = FetchType.LAZY
     )
-    var operationInfo: StationOperationInfo? = null
+    var operationInfo: StationOperationInfoEntity? = null
         protected set
 
     @OneToMany(
@@ -97,9 +89,9 @@ class GasStaion(
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     )
-    private val _tanks: MutableList<FuelTank> = mutableListOf()
+    private val _tanks: MutableList<FuelTankEntity> = mutableListOf()
 
-    val tanks: List<FuelTank>
+    val tanks: List<FuelTankEntity>
         get() = _tanks.toList()
 
     @OneToMany(
@@ -107,24 +99,29 @@ class GasStaion(
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     )
-    private val _homelorrys: MutableList<HomeLorry> = mutableListOf()
+    private val _homeLorrys: MutableList<HomeLorryEntity> = mutableListOf()
 
-    val homeLorrys: List<HomeLorry>
-        get() = _homelorrys.toList()
+    val homeLorrys: List<HomeLorryEntity>
+        get() = _homeLorrys.toList()
 
     @OneToMany(
         mappedBy = "station",
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     )
-    private val _pumps: MutableList<Pump> = mutableListOf()
+    private val _pumps: MutableList<PumpEntity> = mutableListOf()
 
-    val pumps: List<Pump>
+    val pumps: List<PumpEntity>
         get() = _pumps.toList()
 
-    private val _inspections: MutableList<Inspection> = mutableListOf()
+    @OneToMany(
+        mappedBy = "station",
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true
+    )
+    private val _inspections: MutableList<InspectionEntity> = mutableListOf()
 
-    val inspection: List<Inspection>
+    val inspections: List<InspectionEntity>
         get() = _inspections.toList()
 
     fun updateBasicInfo(
@@ -139,42 +136,42 @@ class GasStaion(
         phoneNumber?.let { this.phoneNumber = it }
     }
 
-    fun setOperationInfo(operationInfo: StationOperationInfo) {
+    fun assignOperationInfo(operationInfo: StationOperationInfoEntity) {
         this.operationInfo = operationInfo
         operationInfo.station = this
     }
 
-    fun addTank(tank: FuelTank) {
+    fun addTank(tank: FuelTankEntity) {
         _tanks.add(tank)
         tank.station = this
     }
 
-    fun removeTank(tank: FuelTank) {
+    fun removeTank(tank: FuelTankEntity) {
         _tanks.remove(tank)
         tank.station = null
     }
 
-    fun addHomeLorry(homeLorry: HomeLorry) {
-        _homelorrys.add(homeLorry)
+    fun addHomeLorry(homeLorry: HomeLorryEntity) {
+        _homeLorrys.add(homeLorry)
         homeLorry.station = this
     }
 
-    fun removeHomeLorry(homeLorry: HomeLorry) {
-        _homelorrys.remove(homeLorry)
+    fun removeHomeLorry(homeLorry: HomeLorryEntity) {
+        _homeLorrys.remove(homeLorry)
         homeLorry.station = null
     }
 
-    fun addPump(pump: Pump) {
+    fun addPump(pump: PumpEntity) {
         _pumps.add(pump)
         pump.station = this
     }
 
-    fun removePump(pump: Pump) {
+    fun removePump(pump: PumpEntity) {
         _pumps.remove(pump)
         pump.station = null
     }
 
-    fun addInspection(inspection: Inspection) {
+    fun addInspection(inspection: InspectionEntity) {
         _inspections.add(inspection)
         inspection.station = this
     }

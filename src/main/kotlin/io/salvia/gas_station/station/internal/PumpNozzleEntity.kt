@@ -1,7 +1,6 @@
-package io.salvia.gas_station.domain.station.entity
+package io.salvia.gas_station.station.internal
 
-import io.salvia.gas_station.common.entity.BaseEntity
-import io.salvia.gas_station.domain.station.enums.FuelType
+import io.salvia.gas_station.shared.BaseEntity
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -13,9 +12,11 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
 import jakarta.persistence.UniqueConstraint
 import jakarta.validation.constraints.Min
-import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 
+/**
+ * 주유기 노즐 엔티티 (station 모듈 내부 전용)
+ */
 @Entity
 @Table(
     name = "pump_nozzles",
@@ -29,14 +30,14 @@ import jakarta.validation.constraints.NotNull
         )
     ]
 )
-class PumpNozzle(
+internal class PumpNozzleEntity(
     nozzleNumber: Int,
     fuelType: FuelType
 ) : BaseEntity() {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pump_id", nullable = false)
-    var pump: Pump? = null
+    var pump: PumpEntity? = null
 
     @Column(name = "nozzle_number", nullable = false)
     @field:Min(value = 1, message = "노즐 번호는 1 이상이어야 합니다.")
@@ -52,13 +53,13 @@ class PumpNozzle(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "connected_tank_id", nullable = false)
     @field:NotNull(message = "연결된 탱크는 필수 입력값 입니다.")
-    var connectedTank: FuelTank? = null
+    var connectedTank: FuelTankEntity? = null
         protected set
 
-    fun connectTank(tank: FuelTank) {
+    fun connectTank(tank: FuelTankEntity) {
         require(tank.fuelType == this.fuelType) {
             "노즐의 유종(${this.fuelType.displayName})과 " +
-            "탱크의 유종(${tank.fuelType.displayName})이 일치하지 않습니다."
+                "탱크의 유종(${tank.fuelType.displayName})이 일치하지 않습니다."
         }
         this.connectedTank = tank
     }

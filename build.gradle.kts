@@ -12,19 +12,13 @@ group = "io.salvia"
 version = "0.0.1-SNAPSHOT"
 description = "gasstation modeling exercise"
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
-
 repositories {
 	mavenCentral()
 }
 
 dependencyManagement {
 	imports {
-		mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
+		mavenBom("org.springframework.modulith:spring-modulith-bom:${extra["springModulithVersion"]}")
 	}
 }
 

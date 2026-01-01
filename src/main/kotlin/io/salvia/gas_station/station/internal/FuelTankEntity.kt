@@ -1,10 +1,7 @@
-package io.salvia.gas_station.domain.station.entity
+package io.salvia.gas_station.station.internal
 
-import io.salvia.gas_station.common.entity.BaseEntity
-import io.salvia.gas_station.common.entity.Inspectable
-import io.salvia.gas_station.common.entity.Statusable
-import io.salvia.gas_station.domain.station.enums.EquipmentStatus
-import io.salvia.gas_station.domain.station.enums.FuelType
+import io.salvia.gas_station.shared.BaseEntity
+import io.salvia.gas_station.shared.Inspectable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -22,6 +19,9 @@ import jakarta.validation.constraints.Size
 import java.math.BigDecimal
 import java.time.LocalDate
 
+/**
+ * 유류 탱크 엔티티 (station 모듈 내부 전용)
+ */
 @Entity
 @Table(
     name = "fuel_tanks",
@@ -36,15 +36,15 @@ import java.time.LocalDate
         )
     ]
 )
-class FuelTank(
+internal class FuelTankEntity(
     tankNumber: String,
     fuelType: FuelType,
     capacity: BigDecimal
-) : BaseEntity(), Statusable, Inspectable  {
+) : BaseEntity(), Statusable, Inspectable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id", nullable = false)
-    var station: GasStaion? = null
+    var station: StationEntity? = null
 
     @Column(name = "tank_number", nullable = false, length = 20)
     @field:NotBlank(message = "탱크 번호는 필수 입력값 입니다.")
@@ -91,8 +91,8 @@ class FuelTank(
         protected set
 
     fun fill(amount: BigDecimal): BigDecimal {
-        require(amount > BigDecimal.ZERO) { "충전량은 0보다 커야 합니다."}
-        require(status == EquipmentStatus.ACTIVE) { "탱크가 정상 상태가 아닙니다."}
+        require(amount > BigDecimal.ZERO) { "충전량은 0보다 커야 합니다." }
+        require(status == EquipmentStatus.ACTIVE) { "탱크가 정상 상태가 아닙니다." }
 
         val availableSpace = capacity - currentAmount
         val actualAmount = amount.min(availableSpace)
@@ -102,8 +102,8 @@ class FuelTank(
         return actualAmount
     }
 
-    fun comsume(amount: BigDecimal) {
-        require(amount > BigDecimal.ZERO) { "소비량은 0보다 커야 합니다."}
+    fun consume(amount: BigDecimal) {
+        require(amount > BigDecimal.ZERO) { "소비량은 0보다 커야 합니다." }
         require(currentAmount >= amount) {
             "[재고 부족] 재고: ${currentAmount}L, 요청: ${amount}L"
         }
@@ -111,9 +111,9 @@ class FuelTank(
         currentAmount -= amount
     }
 
-    fun setSafetyStock(amount: BigDecimal) {
-        require(amount >= BigDecimal.ZERO) { "안전 재고량은 0 이상이어야 합니다."}
-        require(amount <= capacity) { "안전 제고는 탱크 용량 이하여야 합니다."}
+    fun updateSafetyStock(amount: BigDecimal) {
+        require(amount >= BigDecimal.ZERO) { "안전 재고량은 0 이상이어야 합니다." }
+        require(amount <= capacity) { "안전 재고는 탱크 용량 이하여야 합니다." }
 
         this.safetyStock = amount
     }
@@ -127,20 +127,6 @@ class FuelTank(
 
         return (currentAmount / capacity * BigDecimal(100))
             .setScale(2, java.math.RoundingMode.HALF_UP)
-    }
-
-    fun changeStatus(newStatus: EquipmentStatus) {
-        this.status = newStatus
-    }
-
-    override fun completeInspection(inspectionDate: LocalDate, nextInspectionDate: LocalDate) {
-        this.lastInspectionDate = inspectionDate
-        this.nextInspectionDate = nextInspectionDate
-    }
-
-    fun isInspectionOverdue(): Boolean {
-        val nextDate = nextInspectionDate ?: return false
-        return LocalDate.now().isAfter(nextDate)
     }
 
     fun setInstallationInfo(installationDate: LocalDate) {
