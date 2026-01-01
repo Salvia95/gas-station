@@ -6,6 +6,8 @@ plugins {
 	kotlin("plugin.jpa") version "1.9.25"
 }
 
+extra["springModulithVersion"] = "1.2.8"
+
 group = "io.salvia"
 version = "0.0.1-SNAPSHOT"
 description = "gasstation modeling exercise"
@@ -20,16 +22,38 @@ repositories {
 	mavenCentral()
 }
 
+dependencyManagement {
+	imports {
+		mavenBom("org.springframework.modulith:spring-modulith-bom:${property("springModulithVersion")}")
+	}
+}
+
 dependencies {
+	// Spring Boot Starters
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-mustache")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
+
+	// Spring Modulith
+	implementation("org.springframework.modulith:spring-modulith-starter-core")
+	implementation("org.springframework.modulith:spring-modulith-events-api")
+	runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
+	runtimeOnly("org.springframework.modulith:spring-modulith-observability")
+
+	// Kotlin
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+	// Development
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+	// Database
 	runtimeOnly("com.h2database:h2")
+
+	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("org.springframework.modulith:spring-modulith-starter-test")
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
