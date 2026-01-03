@@ -26,8 +26,8 @@ import java.time.LocalDate
 @Table(
     name = "pumps",
     indexes = [
-        Index(name = "idx_station_pump_number", columnList = "station_id, pump_number"),
-        Index(name = "idx_status", columnList = "status")
+        Index(name = "idx_pumps_station_number", columnList = "station_id, pump_number"),
+        Index(name = "idx_pumps_status", columnList = "status")
     ],
     uniqueConstraints = [
         UniqueConstraint(

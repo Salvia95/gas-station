@@ -22,8 +22,9 @@ import jakarta.validation.constraints.Size
 @Table(
     name = "gas_stations",
     indexes = [
-        Index(name = "idx_city", columnList = "city"),
-        Index(name = "idx_status", columnList = "status")
+        Index(name = "idx_stations_city", columnList = "city"),
+        Index(name = "idx_stations_status", columnList = "status"),
+        Index(name = "idx_stations_code", columnList = "code")
     ]
 )
 internal class StationEntity(

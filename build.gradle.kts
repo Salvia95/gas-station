@@ -1,12 +1,12 @@
 plugins {
 	kotlin("jvm") version "1.9.25"
 	kotlin("plugin.spring") version "1.9.25"
-	id("org.springframework.boot") version "3.5.8"
+	id("org.springframework.boot") version "3.5.9"
 	id("io.spring.dependency-management") version "1.1.7"
 	kotlin("plugin.jpa") version "1.9.25"
 }
 
-extra["springModulithVersion"] = "1.2.8"
+extra["springModulithVersion"] = "1.4.6"
 
 group = "io.salvia"
 version = "0.0.1-SNAPSHOT"
@@ -35,6 +35,9 @@ dependencies {
 	runtimeOnly("org.springframework.modulith:spring-modulith-actuator")
 	runtimeOnly("org.springframework.modulith:spring-modulith-observability")
 
+	// Actuator
+	implementation("io.micrometer:micrometer-registry-prometheus")
+
 	// Kotlin
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -56,6 +59,10 @@ kotlin {
 	compilerOptions {
 		freeCompilerArgs.addAll("-Xjsr305=strict")
 	}
+}
+
+springBoot { 
+	mainClass.set("io.salvia.gas_station.GasStationApplication.kt")
 }
 
 allOpen {

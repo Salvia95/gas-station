@@ -22,9 +22,9 @@ import java.time.LocalDate
 @Table(
     name = "inspections",
     indexes = [
-        Index(name = "idx_station_date", columnList = "station_id, inspection_date"),
-        Index(name = "idx_status", columnList = "status"),
-        Index(name = "idx_next_date", columnList = "next_inspection_date")
+        Index(name = "idx_inspections_station_date", columnList = "station_id, inspection_date"),
+        Index(name = "idx_inspections_status", columnList = "status"),
+        Index(name = "idx_inspections_scheduled_date", columnList = "scheduled_date")
     ]
 )
 internal class InspectionEntity(

@@ -21,7 +21,8 @@ import jakarta.validation.constraints.NotNull
 @Table(
     name = "pump_nozzles",
     indexes = [
-        Index(name = "idx_pump_nozzle", columnList = "pump_id, nozzle_number")
+        Index(name = "idx_nozzles_pump_number", columnList = "pump_id, nozzle_number"),
+        Index(name = "idx_nozzles_fuel_type", columnList = "fuel_type")
     ],
     uniqueConstraints = [
         UniqueConstraint(

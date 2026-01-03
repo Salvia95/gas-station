@@ -26,8 +26,9 @@ import java.time.LocalDate
 @Table(
     name = "home_lorry",
     indexes = [
-        Index(name = "idx_station_home_lorry_number", columnList = "station_id, home_lorry_number"),
-        Index(name = "idx_fuel_type", columnList = "fuel_type")
+        Index(name = "idx_home_lorry_station_number", columnList = "station_id, home_lorry_number"),
+        Index(name = "idx_home_lorry_fuel_type", columnList = "fuel_type"),
+        Index(name = "idx_home_lorry_status", columnList = "status")
     ],
     uniqueConstraints = [
         UniqueConstraint(
