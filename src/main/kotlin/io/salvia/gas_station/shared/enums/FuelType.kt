@@ -1,4 +1,4 @@
-package io.salvia.gas_station.station.internal
+package io.salvia.gas_station.shared.enums
 
 enum class FuelType(
     val displayName: String

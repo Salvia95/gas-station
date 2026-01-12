@@ -1,7 +1,10 @@
-package io.salvia.gas_station.station.internal
+package io.salvia.gas_station.station.internal.persistence.entities
 
 import io.salvia.gas_station.shared.BaseEntity
 import io.salvia.gas_station.shared.Inspectable
+import io.salvia.gas_station.station.internal.domain.EquipmentStatus
+import io.salvia.gas_station.shared.enums.FuelType
+import io.salvia.gas_station.station.internal.domain.Statusable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -17,6 +20,7 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import java.math.BigDecimal
+import java.math.RoundingMode
 import java.time.LocalDate
 
 /**
@@ -37,7 +41,7 @@ import java.time.LocalDate
         )
     ]
 )
-internal class FuelTankEntity(
+class FuelTankJPAEntity(
     tankNumber: String,
     fuelType: FuelType,
     capacity: BigDecimal
@@ -45,7 +49,7 @@ internal class FuelTankEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id", nullable = false)
-    var station: StationEntity? = null
+    var station: StationJPAEntity? = null
 
     @Column(name = "tank_number", nullable = false, length = 20)
     @field:NotBlank(message = "탱크 번호는 필수 입력값 입니다.")
@@ -127,7 +131,7 @@ internal class FuelTankEntity(
         if (capacity == BigDecimal.ZERO) return BigDecimal.ZERO
 
         return (currentAmount / capacity * BigDecimal(100))
-            .setScale(2, java.math.RoundingMode.HALF_UP)
+            .setScale(2, RoundingMode.HALF_UP)
     }
 
     fun setInstallationInfo(installationDate: LocalDate) {

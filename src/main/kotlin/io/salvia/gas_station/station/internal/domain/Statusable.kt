@@ -1,9 +1,9 @@
-package io.salvia.gas_station.station.internal
+package io.salvia.gas_station.station.internal.domain
 
 /**
  * 장비 상태 관리 인터페이스 (station 모듈 내부 전용)
  */
-internal interface Statusable {
+interface Statusable {
     var status: EquipmentStatus
 
     fun changeStatus(newStatus: EquipmentStatus) {

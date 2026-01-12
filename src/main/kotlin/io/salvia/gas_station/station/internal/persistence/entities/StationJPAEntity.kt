@@ -1,6 +1,7 @@
-package io.salvia.gas_station.station.internal
+package io.salvia.gas_station.station.internal.persistence.entities
 
 import io.salvia.gas_station.shared.BaseEntity
+import io.salvia.gas_station.station.internal.domain.StationStatus
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -27,7 +28,7 @@ import jakarta.validation.constraints.Size
         Index(name = "idx_stations_code", columnList = "code")
     ]
 )
-internal class StationEntity(
+class StationJPAEntity(
     name: String,
     code: String,
     address: String,
@@ -90,9 +91,9 @@ internal class StationEntity(
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     )
-    private val _tanks: MutableList<FuelTankEntity> = mutableListOf()
+    private val _tanks: MutableList<FuelTankJPAEntity> = mutableListOf()
 
-    val tanks: List<FuelTankEntity>
+    val tanks: List<FuelTankJPAEntity>
         get() = _tanks.toList()
 
     @OneToMany(
@@ -100,9 +101,9 @@ internal class StationEntity(
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     )
-    private val _homeLorrys: MutableList<HomeLorryEntity> = mutableListOf()
+    private val _homeLorrys: MutableList<HomeLorryJPAEntity> = mutableListOf()
 
-    val homeLorrys: List<HomeLorryEntity>
+    val homeLorrys: List<HomeLorryJPAEntity>
         get() = _homeLorrys.toList()
 
     @OneToMany(
@@ -110,9 +111,9 @@ internal class StationEntity(
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     )
-    private val _pumps: MutableList<PumpEntity> = mutableListOf()
+    private val _pumps: MutableList<PumpJPAEntity> = mutableListOf()
 
-    val pumps: List<PumpEntity>
+    val pumps: List<PumpJPAEntity>
         get() = _pumps.toList()
 
     @OneToMany(
@@ -142,32 +143,32 @@ internal class StationEntity(
         operationInfo.station = this
     }
 
-    fun addTank(tank: FuelTankEntity) {
+    fun addTank(tank: FuelTankJPAEntity) {
         _tanks.add(tank)
         tank.station = this
     }
 
-    fun removeTank(tank: FuelTankEntity) {
+    fun removeTank(tank: FuelTankJPAEntity) {
         _tanks.remove(tank)
         tank.station = null
     }
 
-    fun addHomeLorry(homeLorry: HomeLorryEntity) {
+    fun addHomeLorry(homeLorry: HomeLorryJPAEntity) {
         _homeLorrys.add(homeLorry)
         homeLorry.station = this
     }
 
-    fun removeHomeLorry(homeLorry: HomeLorryEntity) {
+    fun removeHomeLorry(homeLorry: HomeLorryJPAEntity) {
         _homeLorrys.remove(homeLorry)
         homeLorry.station = null
     }
 
-    fun addPump(pump: PumpEntity) {
+    fun addPump(pump: PumpJPAEntity) {
         _pumps.add(pump)
         pump.station = this
     }
 
-    fun removePump(pump: PumpEntity) {
+    fun removePump(pump: PumpJPAEntity) {
         _pumps.remove(pump)
         pump.station = null
     }

@@ -1,7 +1,10 @@
-package io.salvia.gas_station.station.internal
+package io.salvia.gas_station.station.internal.persistence.entities
 
 import io.salvia.gas_station.shared.BaseEntity
 import io.salvia.gas_station.shared.Inspectable
+import io.salvia.gas_station.station.internal.domain.EquipmentStatus
+import io.salvia.gas_station.shared.enums.FuelType
+import io.salvia.gas_station.station.internal.domain.Statusable
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -37,7 +40,7 @@ import java.time.LocalDate
         )
     ]
 )
-internal class HomeLorryEntity(
+class HomeLorryJPAEntity(
     homeLorryNumber: String,
     fuelType: FuelType,
     capacity: BigDecimal
@@ -45,7 +48,7 @@ internal class HomeLorryEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id", nullable = false)
-    var station: StationEntity? = null
+    var station: StationJPAEntity? = null
 
     @Column(name = "home_lorry_number", nullable = false, length = 20)
     @field:NotBlank(message = "홈로리 번호는 필수 입력값 입니다.")

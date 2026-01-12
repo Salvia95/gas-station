@@ -1,7 +1,9 @@
-package io.salvia.gas_station.station.internal
+package io.salvia.gas_station.station.internal.persistence.entities
 
 import io.salvia.gas_station.shared.BaseEntity
 import io.salvia.gas_station.shared.Inspectable
+import io.salvia.gas_station.station.internal.domain.EquipmentStatus
+import io.salvia.gas_station.station.internal.domain.Statusable
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
@@ -36,14 +38,14 @@ import java.time.LocalDate
         )
     ]
 )
-internal class PumpEntity(
+class PumpJPAEntity(
     pumpNumber: String,
     nozzleCount: Int
 ) : BaseEntity(), Inspectable, Statusable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id", nullable = false)
-    var station: StationEntity? = null
+    var station: StationJPAEntity? = null
 
     @Column(name = "pump_number", nullable = false, length = 20)
     @field:NotBlank(message = "주유기 번호는 필수 입력값 입니다.")
@@ -79,12 +81,12 @@ internal class PumpEntity(
         cascade = [CascadeType.ALL],
         orphanRemoval = true
     )
-    private val _nozzles: MutableList<PumpNozzleEntity> = mutableListOf()
+    private val _nozzles: MutableList<PumpNozzleJPAEntity> = mutableListOf()
 
-    val nozzles: List<PumpNozzleEntity>
+    val nozzles: List<PumpNozzleJPAEntity>
         get() = _nozzles.toList()
 
-    fun addNozzle(nozzle: PumpNozzleEntity) {
+    fun addNozzle(nozzle: PumpNozzleJPAEntity) {
         require(_nozzles.size < nozzleCount) {
             "노즐 개수는 ${nozzleCount}개를 초과할 수 없습니다."
         }
@@ -96,7 +98,7 @@ internal class PumpEntity(
         nozzle.pump = this
     }
 
-    fun removeNozzle(nozzle: PumpNozzleEntity) {
+    fun removeNozzle(nozzle: PumpNozzleJPAEntity) {
         _nozzles.remove(nozzle)
         nozzle.pump = null
     }

@@ -7,7 +7,7 @@ package io.salvia.gas_station.station
 data class Station(
     val id: Long,
     val name: String,
-    val code: String,
+    val businessNumber: String,
     val address: String,
     val city: String,
     val phoneNumber: String,

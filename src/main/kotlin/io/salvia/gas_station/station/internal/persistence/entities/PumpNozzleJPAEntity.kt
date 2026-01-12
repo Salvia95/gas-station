@@ -1,6 +1,7 @@
-package io.salvia.gas_station.station.internal
+package io.salvia.gas_station.station.internal.persistence.entities
 
 import io.salvia.gas_station.shared.BaseEntity
+import io.salvia.gas_station.shared.enums.FuelType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
@@ -31,14 +32,14 @@ import jakarta.validation.constraints.NotNull
         )
     ]
 )
-internal class PumpNozzleEntity(
+internal class PumpNozzleJPAEntity(
     nozzleNumber: Int,
     fuelType: FuelType
 ) : BaseEntity() {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pump_id", nullable = false)
-    var pump: PumpEntity? = null
+    var pump: PumpJPAEntity? = null
 
     @Column(name = "nozzle_number", nullable = false)
     @field:Min(value = 1, message = "노즐 번호는 1 이상이어야 합니다.")
@@ -54,10 +55,10 @@ internal class PumpNozzleEntity(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "connected_tank_id", nullable = false)
     @field:NotNull(message = "연결된 탱크는 필수 입력값 입니다.")
-    var connectedTank: FuelTankEntity? = null
+    var connectedTank: FuelTankJPAEntity? = null
         protected set
 
-    fun connectTank(tank: FuelTankEntity) {
+    fun connectTank(tank: FuelTankJPAEntity) {
         require(tank.fuelType == this.fuelType) {
             "노즐의 유종(${this.fuelType.displayName})과 " +
                 "탱크의 유종(${tank.fuelType.displayName})이 일치하지 않습니다."

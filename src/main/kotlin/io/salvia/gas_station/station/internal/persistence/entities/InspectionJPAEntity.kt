@@ -1,4 +1,4 @@
-package io.salvia.gas_station.station.internal
+package io.salvia.gas_station.station.internal.persistence.entities
 
 import io.salvia.gas_station.shared.BaseEntity
 import jakarta.persistence.Column
@@ -27,7 +27,7 @@ import java.time.LocalDate
         Index(name = "idx_inspections_scheduled_date", columnList = "scheduled_date")
     ]
 )
-internal class InspectionEntity(
+class InspectionEntity(
     inspectionType: InspectionType,
     inspectionTarget: InspectionTarget,
     scheduledDate: LocalDate,
@@ -36,7 +36,7 @@ internal class InspectionEntity(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "station_id", nullable = false)
-    var station: StationEntity? = null
+    var station: StationJPAEntity? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "inspection_type", nullable = false, length = 20)

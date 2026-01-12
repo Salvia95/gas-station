@@ -8,7 +8,12 @@ interface StationService {
     /**
      * 주유소 정보 조회
      */
-    fun getStation(stationId: StationId): Station?
+    fun getStations(): List<Station>?
+
+    /**
+     * 주유소 Id로 조회
+     */
+    fun getStationById(id: String): Station?
 
     /**
      * 주유소 코드로 조회
@@ -18,10 +23,10 @@ interface StationService {
     /**
      * 주유소 운영 여부 확인
      */
-    fun isStationOperating(stationId: StationId): Boolean
+    fun isStationOperating(code: String): Boolean
 
     /**
      * 도시별 주유소 목록 조회
      */
-    fun getStationsByCity(city: String): List<Station>
+    fun getStationsByCity(city: String): List<Station>?
 }

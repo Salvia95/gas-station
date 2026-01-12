@@ -1,4 +1,4 @@
-package io.salvia.gas_station.station.internal
+package io.salvia.gas_station.station.internal.persistence.entities
 
 import io.salvia.gas_station.shared.BaseEntity
 import jakarta.persistence.Column
@@ -17,7 +17,7 @@ import java.time.LocalTime
  */
 @Entity
 @Table(name = "station_operation_info")
-internal class StationOperationInfoEntity(
+class StationOperationInfoEntity(
     stationType: StationType,
     is24Hours: Boolean,
     openingTime: LocalTime?,
@@ -30,7 +30,7 @@ internal class StationOperationInfoEntity(
         nullable = false,
         unique = true
     )
-    var station: StationEntity? = null
+    var station: StationJPAEntity? = null
 
     @Enumerated(EnumType.STRING)
     @Column(name = "station_type", nullable = false, length = 20)
@@ -148,13 +148,13 @@ internal class StationOperationInfoEntity(
     )
 }
 
-internal enum class StationType(val description: String, val laborCostMultiplier: Double) {
+enum class StationType(val description: String, val laborCostMultiplier: Double) {
     SELF_SERVICE("셀프", 0.0),
     FULL_SERVICE("유인", 1.0),
     HYBRID("혼합", 0.5)
 }
 
-internal enum class CarWashType(val description: String) {
+enum class CarWashType(val description: String) {
     AUTOMATIC("자동 세차"),
     MANUAL("수동 세차"),
     HYBRID("혼합형")
