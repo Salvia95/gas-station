@@ -77,7 +77,7 @@ class InspectionEntity(
     protected constructor() : this(InspectionType.REGULAR, InspectionTarget.STATION, LocalDate.now(), "")
 }
 
-internal enum class InspectionType(
+enum class InspectionType(
     val description: String,
     val requiredDocumentation: Boolean
 ) {
@@ -92,7 +92,7 @@ internal enum class InspectionType(
     }
 }
 
-internal enum class InspectionTarget(val description: String) {
+enum class InspectionTarget(val description: String) {
     STATION("주유소 전체"),
     FUEL_TANK("연료탱크"),
     PUMP("주유기"),
@@ -101,7 +101,7 @@ internal enum class InspectionTarget(val description: String) {
     OTHER("기타");
 }
 
-internal enum class InspectionStatus(val description: String) {
+enum class InspectionStatus(val description: String) {
     SCHEDULED("점검 예정"),
     IN_PROGRESS("진행 중"),
     COMPLETED_NORMAL("완료-정상"),

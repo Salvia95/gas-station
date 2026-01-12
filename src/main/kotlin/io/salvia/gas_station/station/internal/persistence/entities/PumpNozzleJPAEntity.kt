@@ -32,7 +32,7 @@ import jakarta.validation.constraints.NotNull
         )
     ]
 )
-internal class PumpNozzleJPAEntity(
+class PumpNozzleJPAEntity(
     nozzleNumber: Int,
     fuelType: FuelType
 ) : BaseEntity() {
