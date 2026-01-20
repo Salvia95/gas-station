@@ -30,6 +30,7 @@ Architecture Decision Record(ADR)는 아키텍처적으로 중요한 결정을 �
 | [ADR-0008](0008-use-surrogate-key-and-fk-based-relation.md) | 데이터 관계 설계로 FK 기반 정규화 채택 | Accepted | 데이터 |
 | [ADR-0009](0009-apply-cqrs-pattern-for-data-schema.md) | 데이터 스키마에 CQRS 패턴 적용 | Accepted | 데이터 |
 | [ADR-0010](0010-use-flyway-for-schema-version-control.md) | Flyway를 이용한 스키마 버전 관리 | Accepted | 데이터 |
+| [ADR-0011](0011-prohibit-direct-module-invocation.md) | 모듈 간 직접 호출 금지 및 이벤트 통신 강제 | Accepted | 아키텍처 |
 
 ## 카테고리별 분류
 
@@ -47,6 +48,7 @@ Architecture Decision Record(ADR)는 아키텍처적으로 중요한 결정을 �
 - ADR-0005: 모놀리스 → 모듈러 모놀리스
 - ADR-0006: JSON-RPC → RESTful API
 - ADR-0007: 동기 호출 → 비동기 이벤트
+- ADR-0011: 모듈 간 직접 호출 금지 및 이벤트 통신 강제
 
 ### 데이터 (Data)
 데이터 모델링과 스키마 설계에 대한 결정
