@@ -34,14 +34,6 @@ class StationServiceImpl(
     }
 }
 
-data class CreateStationCommand(
-    val name: String,
-    val address: String,
-    val ownerName: String,
-    val businessNumber: String,
-    val phoneNumber: String?
-)
-
 // 확장 함수: StationJPAEntity를 Station으로 변환
 private fun StationJPAEntity.toStation(): Station {
     return Station(
